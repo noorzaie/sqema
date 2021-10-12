@@ -1,0 +1,25 @@
+{
+    "name": "sqema",
+    "version": "1.0.0",
+    "description": "Convert relational databases to json schemas",
+    "main": "index.js",
+    "scripts": {
+        "test": "ts-node test.ts",
+        "build": "tsc"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "commander": "^8.2.0",
+        "pg-structure": "^7.12.1",
+        "prompts": "^2.4.2"
+    },
+    "devDependencies": {
+        "@types/json-schema": "^7.0.9",
+        "@types/node": "^16.10.3",
+        "@types/prompts": "^2.0.14",
+        "ts-node": "^10.2.1",
+        "typescript": "^4.4.3"
+    },
+    "bin": "cli/cli.js"
+}

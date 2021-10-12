@@ -1,0 +1,6 @@
+test.ts
+test.js
+node_modules
+output
+.idea/
+*.js
