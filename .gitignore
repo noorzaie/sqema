@@ -1,6 +1,4 @@
-test.ts
-test.js
 node_modules
-output
-.idea/
+.idea
 *.js
+*.d.ts

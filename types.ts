@@ -3,20 +3,12 @@ import { JSONSchema7Type } from 'json-schema';
 export type DialectType = 'postgres';
 
 export interface DatabaseConfigType {
+	host: string;
+	port: number;
 	username: string;
 	password: string;
 	database: string;
 	schemas?: string[];
-}
-
-export interface ColumnType {
-	name: string;
-	type: any;
-	length: number | undefined;
-	comment: any;
-	notNull: boolean;
-	minValue: number | undefined;
-	maxValue: number | undefined;
 }
 
 export interface DBClassType {

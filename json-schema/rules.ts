@@ -103,7 +103,3 @@ export const getNetworkRule = (type: BaseType) => {
 export const getJsonRule = (type: BaseType) => {
 	return { type: 'object' };
 }
-
-export const addGeneralProperties = (ruleObject: ObjectType, name: string, notNull: boolean, defaultValue: any, values: Array<any>) => {
-	ruleObject
-}

@@ -8,6 +8,8 @@ import SQLToJsonSchemaConvertor from '../index';
 	program
 		.version('1.0.0')
 		.addOption(new Option('-d, --dialect <dialect>', 'database dialect').default('postgres').choices([ 'postgres' ]))
+		.addOption(new Option('-h, --host <host>', 'database host'))
+		.addOption(new Option('-port, --port <port>', 'database port'))
 		.requiredOption('-db, --database <database>', 'database name')
 		.requiredOption('-u, --username <username>', 'database username')
 		.addOption(new Option('-p, --path <path>', 'output folder').default('output'))
@@ -32,12 +34,14 @@ import SQLToJsonSchemaConvertor from '../index';
 	const convertor = new SQLToJsonSchemaConvertor(
 		options.dialect,
 		{
+			host: options.host,
+			port: options.port,
 			database: options.database,
 			username: options.username,
 			password: options.password
 		}
 	);
 
-	convertor.generateJsonSchemas();
+	await convertor.generateJsonSchemas();
 	convertor.writeJsonSchemas(options.path, options.granularity, options.format);
 })();

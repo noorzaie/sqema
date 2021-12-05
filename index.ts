@@ -6,8 +6,8 @@ type FilesPathsType = { name: string; path: string; data: Object; }[];
 
 class SQLToJsonSchemaConvertor {
 	private db: DBClassType;
-	private dbName: string;
-	private schema: DefinitionsType;
+	private readonly dbName: string;
+	private _schema: DefinitionsType;
 
 	constructor(dialect: DialectType, databaseConfig: DatabaseConfigType) {
 		switch (dialect) {
@@ -22,10 +22,14 @@ class SQLToJsonSchemaConvertor {
 
 	public generateJsonSchemas = async () => {
 		await this.db.connect();
-		this.schema = this.db.getColumns();
+		this._schema = this.db.getColumns();
 	};
 
-	public writeJsonSchemas = (path: string, granularity: 'single-file' | 'schema' | 'table' | 'field', format: 'json' | 'js' | 'ts') => {
+	get schema() {
+		return this._schema;
+	}
+
+	public writeJsonSchemas = (path: string, granularity: 'single-file' | 'schema' | 'table' | 'field' = 'single-file', format: 'json' | 'js' | 'ts' = 'json') => {
 		createDirectory(path);
 		let files: FilesPathsType = [];
 		let hasMultipleSchemas = false;
@@ -36,12 +40,12 @@ class SQLToJsonSchemaConvertor {
 					{
 						name: this.dbName,
 						path,
-						data: this.schema
+						data: this._schema
 					}
 				];
 				break;
 			case 'schema':
-				files = Object.entries(this.schema).map(([ schema, data ]) => ({
+				files = Object.entries(this._schema).map(([ schema, data ]) => ({
 						name: schema,
 						path,
 						data
@@ -50,8 +54,8 @@ class SQLToJsonSchemaConvertor {
 				break;
 			case 'table':
 				files = [];
-				hasMultipleSchemas = Object.keys(this.schema).length > 1;
-				for (const [ schema, tables ] of Object.entries(this.schema)) {
+				hasMultipleSchemas = Object.keys(this._schema).length > 1;
+				for (const [ schema, tables ] of Object.entries(this._schema)) {
 					const p = hasMultipleSchemas ? joinPaths(path, schema) : path;
 					createDirectory(p);
 					files = [
@@ -66,8 +70,8 @@ class SQLToJsonSchemaConvertor {
 				break;
 			case 'field':
 				files = [];
-				hasMultipleSchemas = Object.keys(this.schema).length > 1;
-				for (const [ schema, tables ] of Object.entries(this.schema)) {
+				hasMultipleSchemas = Object.keys(this._schema).length > 1;
+				for (const [ schema, tables ] of Object.entries(this._schema)) {
 					for (const [ table, fields ] of Object.entries(tables)) {
 						const p = hasMultipleSchemas ? joinPaths(path, schema, table) : joinPaths(path, table);
 						createDirectory(p);
@@ -90,7 +94,7 @@ class SQLToJsonSchemaConvertor {
 
 	private writeFiles = (files: FilesPathsType, format: 'json' | 'js' | 'ts') => {
 		for (const file of files) {
-			console.log(`Writing ${file.name}.${format} to ${joinPaths(process.cwd(), file.path)} ...`);
+			console.log(`Sqema: Writing ${file.name}.${format} to ${joinPaths(process.cwd(), file.path)} ...`);
 			switch (format) {
 				case 'js':
 					writeJsToFile(file.path, file.name, file.data);
